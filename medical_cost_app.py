@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import pickle
 
-
+pd.set_option('future.no_silent_downcasting', True)
 st.title('Medical Cost Prediction App')
 st.write("""
 This app predicts the medical cost by using linear regression
@@ -38,10 +38,12 @@ user_df.replace({'yes': 1, 'no': 0, 'female': 0, 'male':1}, inplace=True)
 X = user_df.values.reshape(1, -1)
 
 # Load the saved model
-with open('lasso_model_pipeline.pkl', 'rb') as file:
+with open('model_pipeline.pkl', 'rb') as file:
     loaded_pipeline = pickle.load(file)
 
-prediction = loaded_pipeline.predict(X)
+feature_names = user_df.columns  
+X_named = pd.DataFrame(X, columns=feature_names)
+prediction = loaded_pipeline.predict(X_named)
 
 st.header('Predicted medical cost')
 st.write(prediction)
